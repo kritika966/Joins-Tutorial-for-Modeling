@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Joins_Tutorial_for_Modeling</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#how-to-join-datasets-for-modeling-and-problems-to-avoid"
+id="toc-how-to-join-datasets-for-modeling-and-problems-to-avoid">How to
+Join Datasets for Modeling (and Problems to Avoid)</a></li>
+<li><a href="#types-of-joins" id="toc-types-of-joins">Types of
+Joins</a></li>
+<li><a href="#dataset-overview-home-credit-default-risk"
+id="toc-dataset-overview-home-credit-default-risk">Dataset Overview —
+Home Credit Default Risk</a></li>
+<li><a href="#mutating-join-problem-explained"
+id="toc-mutating-join-problem-explained">Mutating Join Problem
+Explained</a></li>
+<li><a href="#correct-pattern-to-handle-this"
+id="toc-correct-pattern-to-handle-this">Correct Pattern to Handle
+This</a></li>
+<li><a href="#import-and-load-data" id="toc-import-and-load-data">Import
+and Load data</a></li>
+<li><a href="#bad-join-example---mutating-join"
+id="toc-bad-join-example---mutating-join">Bad Join Example - Mutating
+Join</a></li>
+<li><a href="#correct-pattern---aggregation-before-join"
+id="toc-correct-pattern---aggregation-before-join">Correct Pattern -
+Aggregation before Join</a>
+<ul>
+<li><a href="#now-perform-correct-join"
+id="toc-now-perform-correct-join">Now perform correct join</a></li>
+</ul></li>
+<li><a href="#summary-key-takeaways"
+id="toc-summary-key-takeaways">Summary &amp; Key Takeaways</a></li>
+<li><a href="#final-notes-for-your-students"
+id="toc-final-notes-for-your-students">Final Notes for Your
+Students</a></li>
+<li><a href="#why-this-matters-in-real-ml-work"
+id="toc-why-this-matters-in-real-ml-work">Why This Matters in Real ML
+Work</a></li>
+</ul>
+</nav>
+<h1 id="how-to-join-datasets-for-modeling-and-problems-to-avoid">How to
+Join Datasets for Modeling (and Problems to Avoid)</h1>
+<p><strong>In real-world ML tasks:</strong></p>
+<ul>
+<li><p>Data often comes in multiple tables.</p></li>
+<li><p>You need to join them to create one modeling dataset.</p></li>
+</ul>
+<p><strong>If you join incorrectly:</strong></p>
+<ul>
+<li><p>You might introduce duplicate rows.</p></li>
+<li><p>You can cause data leakage (future info leaks into
+training).</p></li>
+<li><p>You can break the 1 row per instance assumption required by most
+ML algorithms.</p></li>
+</ul>
+<p>This tutorial will teach you how to join datasets safely using pandas
+in Python — a key skill for any ML/Data Science project.</p>
+<h1 id="types-of-joins">Types of Joins</h1>
+<table>
+<colgroup>
+<col style="width: 8%" />
+<col style="width: 56%" />
+<col style="width: 34%" />
+</colgroup>
+<thead>
+<tr>
+<th>Type of Join</th>
+<th>Meaning</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>INNER JOIN</td>
+<td>Only keep rows with matching keys in both tables</td>
+<td>You only want clients with bureau history</td>
+</tr>
+<tr>
+<td>LEFT JOIN</td>
+<td>Keep all rows from <strong>left table</strong>, add data from right
+table (NULL if no match)</td>
+<td>You want to keep all clients and add bureau info</td>
+</tr>
+<tr>
+<td>RIGHT JOIN</td>
+<td>Keep all rows from <strong>right table</strong>, add data from left
+table</td>
+<td>Less common in ML tasks</td>
+</tr>
+<tr>
+<td>FULL JOIN</td>
+<td>Keep all rows from both tables</td>
+<td>Rare for ML tasks</td>
+</tr>
+</tbody>
+</table>
+<p>In ML, we usually use:</p>
+<p>LEFT JOIN → Safe when you want to keep all original instances.</p>
+<p>INNER JOIN → Risky, can remove rows (sometimes useful but must be
+intentional).</p>
+<h1 id="dataset-overview-home-credit-default-risk">Dataset Overview —
+Home Credit Default Risk</h1>
+<p><strong>Why this dataset?</strong></p>
+<ul>
+<li>Real-world like: multiple related tables</li>
+<li>Designed for tabular ML modeling → good learning case</li>
+<li>Main modeling table: application_train.csv</li>
+<li>Several “child tables”: previous loans, credit cards, bureau, POS
+loans, etc.</li>
+</ul>
+<p><strong>Useful for demonstrating:</strong></p>
+<ul>
+<li><p>Multi-table joining</p></li>
+<li><p>Aggregation before joining</p></li>
+<li><p>Mutating join problems</p></li>
+</ul>
+<table>
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 27%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Table</th>
+<th>Primary Key</th>
+<th>Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>application_train.csv</code></td>
+<td><code>SK_ID_CURR</code> (client ID)</td>
+<td>Main modeling table</td>
+</tr>
+<tr>
+<td><code>bureau.csv</code></td>
+<td><code>SK_ID_CURR</code>, <code>SK_ID_BUREAU</code></td>
+<td>Client’s bureau credit history, many rows per client</td>
+</tr>
+</tbody>
+</table>
+<p>This is a <strong>1-to-many</strong> relationship:</p>
+<ul>
+<li>application_train → 1 row per client</li>
+<li>bureau → multiple rows per client</li>
+</ul>
+<h1 id="mutating-join-problem-explained">Mutating Join Problem
+Explained</h1>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># BAD example — naive join (just to show)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># df_bad = application_train.merge(bureau, on=&#39;SK_ID_CURR&#39;, how=&#39;left&#39;)</span></span></code></pre></div>
+<p>In this case, each client with multiple bureau records appears
+multiple times - Row count of df_bad &gt; row count of application_train
+- ML model is now broken: training instances are not independent</p>
+<p>This is called a <strong>mutating join:</strong></p>
+<ul>
+<li><p>You change the number of rows.</p></li>
+<li><p>You “inflate” data incorrectly.</p></li>
+</ul>
+<h1 id="correct-pattern-to-handle-this">Correct Pattern to Handle
+This</h1>
+<p><strong>Solution:</strong></p>
+<p>Step 1: Aggregate child table FIRST → 1 row per client</p>
+<p>Step 2: Then LEFT JOIN the aggregate back → no row count change</p>
+<h1 id="import-and-load-data">Import and Load data</h1>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load main table</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>application_train <span class="op">=</span> pd.read_csv(<span class="st">&#39;application_train.csv&#39;</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Load bureau table</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>bureau <span class="op">=</span> pd.read_csv(<span class="st">&#39;bureau.csv&#39;</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Application train shape: </span><span class="sc">{</span>application_train<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Bureau shape: </span><span class="sc">{</span>bureau<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<pre><code>Application train shape: (307511, 122)
+Bureau shape: (1716428, 17)</code></pre>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(application_train[<span class="st">&#39;SK_ID_CURR&#39;</span>].nunique())  <span class="co"># number of clients</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(bureau[<span class="st">&#39;SK_ID_CURR&#39;</span>].nunique())             <span class="co"># number of clients in bureau table</span></span></code></pre></div>
+<pre><code>307511
+305811</code></pre>
+<h1 id="bad-join-example---mutating-join">Bad Join Example - Mutating
+Join</h1>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Demonstrate BAD join</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>df_bad <span class="op">=</span> application_train.merge(bureau, on<span class="op">=</span><span class="st">&#39;SK_ID_CURR&#39;</span>, how<span class="op">=</span><span class="st">&#39;left&#39;</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;BAD join shape: </span><span class="sc">{</span>df_bad<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">&quot;</span>)  <span class="co"># Will be much larger than application_train</span></span></code></pre></div>
+<pre><code>BAD join shape: (1509345, 138)</code></pre>
+<h1 id="correct-pattern---aggregation-before-join">Correct Pattern -
+Aggregation before Join</h1>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Aggregate bureau features per client</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>bureau_agg <span class="op">=</span> bureau.groupby(<span class="st">&#39;SK_ID_CURR&#39;</span>).agg({</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;AMT_CREDIT_SUM&#39;</span>: [<span class="st">&#39;mean&#39;</span>, <span class="st">&#39;max&#39;</span>],</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;AMT_CREDIT_SUM_DEBT&#39;</span>: [<span class="st">&#39;mean&#39;</span>, <span class="st">&#39;max&#39;</span>],</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;CREDIT_DAY_OVERDUE&#39;</span>: [<span class="st">&#39;max&#39;</span>],</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;SK_ID_BUREAU&#39;</span>: <span class="st">&#39;count&#39;</span>  <span class="co"># number of bureau records per client</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Flatten columns</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>bureau_agg.columns <span class="op">=</span> [<span class="st">&#39;BUREAU_&#39;</span> <span class="op">+</span> <span class="st">&#39;_&#39;</span>.join(col).strip() <span class="cf">for</span> col <span class="kw">in</span> bureau_agg.columns.values]</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Reset index to prepare for join</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>bureau_agg <span class="op">=</span> bureau_agg.reset_index()</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Bureau agg shape: </span><span class="sc">{</span>bureau_agg<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<pre><code>Bureau agg shape: (305811, 7)</code></pre>
+<h2 id="now-perform-correct-join">Now perform correct join</h2>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Good join: application_train + bureau_agg</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>df_model <span class="op">=</span> application_train.merge(bureau_agg, on<span class="op">=</span><span class="st">&#39;SK_ID_CURR&#39;</span>, how<span class="op">=</span><span class="st">&#39;left&#39;</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Final modeling dataset shape: </span><span class="sc">{</span>df_model<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<pre><code>Final modeling dataset shape: (307511, 128)</code></pre>
+<ul>
+<li>Row count preserved → same as application_train</li>
+<li>No duplicate rows</li>
+<li>Suitable for modeling</li>
+</ul>
+<h1 id="summary-key-takeaways">Summary &amp; Key Takeaways</h1>
+<p><strong>When to Use Which Join in ML?</strong></p>
+<ul>
+<li>You want to keep all training instances and enrich with new features
+→ LEFT JOIN<br />
+</li>
+<li>You only want instances with matching records → INNER JOIN (but be
+careful)<br />
+</li>
+<li>You need full outer info → FULL JOIN (rare) | |</li>
+</ul>
+<p><strong>Mutating Join — Key Problem</strong></p>
+<p>If you join a child table without aggregation, you will:</p>
+<ul>
+<li><p>Duplicate rows → breaks ML assumptions.</p></li>
+<li><p>Change class distribution → can cause target leakage.</p></li>
+</ul>
+<p>Always aggregate child tables first, then join.</p>
+<p><strong>Our Case:</strong> Chose
+<strong>application_train.csv</strong> + <strong>bureau.csv</strong>
+because it’s a 1-many example → perfect to teach aggregation and safe
+joins.</p>
+<p>We used <strong>LEFT JOIN</strong> to preserve all clients.</p>
+<p>We demonstrated <strong>mutating join risk</strong> and solved
+it.</p>
+<h1 id="final-notes-for-your-students">Final Notes for Your
+Students</h1>
+<p>When preparing data for ML:</p>
+<ul>
+<li>Think about row cardinality</li>
+<li>Be careful with 1-many joins</li>
+<li>Prefer LEFT JOIN when enriching data</li>
+<li>Always check row counts before and after join → sanity check</li>
+<li>Aggregate child tables first → this is a safe and common
+pattern!</li>
+</ul>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sanity Check</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Row count before join:&quot;</span>, application_train.shape[<span class="dv">0</span>])</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Row count after safe join:&quot;</span>, df_model.shape[<span class="dv">0</span>])</span></code></pre></div>
+<pre><code>Row count before join: 307511
+Row count after safe join: 307511</code></pre>
+<p>If both match → you did it right!</p>
+<h1 id="why-this-matters-in-real-ml-work">Why This Matters in Real ML
+Work</h1>
+<p>In Machine Learning:</p>
+<ul>
+<li><p>1-many relationships are everywhere: transaction history, logs,
+clickstream, credit history, etc.</p></li>
+<li><p>Safe joining is an essential skill → prevents data leakage and
+model corruption.</p></li>
+<li><p>If you blindly join tables → you’ll get bad models and possibly
+wrong business decisions.</p></li>
+</ul>
+</body>
+</html>
